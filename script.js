@@ -43,25 +43,31 @@ function playRound(playerSelection, computerSelection) {
   }
 }
 
-const allBtn = document.querySelectorAll("button");
+const allBtn = document.querySelectorAll(".rps-container > button");
 const divResult = document.querySelector(".result");
+const playerScore = document.querySelector(".playerScore");
+const computerScore = document.querySelector(".computerScore")
+const gameOver = document.querySelector('.game-over')
+const restartBtn = document.createElement('button');
+restartBtn.textContent = 'Restart';
+restartBtn.classList.add('restart-btn')
+const container = document.querySelector('.container')
 let playerPoint = 0;
 let computerPoint = 0;
 
 allBtn.forEach((btn) => {
   btn.addEventListener("click", game);
 });
+restartBtn.addEventListener("click", restart)
 
 function game(e) {
   const playerSelection = e.path[0].value;
-  console.log(playerSelection);
   const computerSelection = computerPlay();
-  console.log(computerSelection);
   const result = playRound(playerSelection, computerSelection);
-  console.log(result);
   divResult.textContent = result;
   counterPoint(result);
-  console.log(`You: ${playerPoint}\nComputer: ${computerPoint}`);
+  playerScore.textContent = `You: ${playerPoint}`
+  computerScore.textContent =  `Computer: ${computerPoint}`;
   judge();
 }
 
@@ -75,8 +81,32 @@ function counterPoint(result) {
 
 function judge() {
   if (playerPoint === 5) {
-    console.log('game over')
+    gameOver.setAttribute('style', 'color: green')
+    gameOver.textContent = 'Game Over!\r\nYou lucky star!';
+    gameOverHandler()
   } else if (computerPoint === 5){
-    console.log('game over')
+    gameOver.setAttribute('style', 'color: red')
+    gameOver.textContent = 'Game Over!\r\nWish you have good luck next time';
+    gameOverHandler()
   }
+}
+
+function gameOverHandler() {
+  allBtn.forEach((btn) => {
+    btn.removeEventListener("click", game);
+  });
+  container.appendChild(restartBtn)
+}
+
+function restart() {
+  playerPoint = 0;
+  computerPoint = 0;
+  playerScore.textContent = ''
+  computerScore.textContent =  '';
+  divResult.textContent = '';
+  gameOver.textContent = '';
+  allBtn.forEach((btn) => {
+    btn.addEventListener("click", game);
+  });
+  container.removeChild(restartBtn)
 }
